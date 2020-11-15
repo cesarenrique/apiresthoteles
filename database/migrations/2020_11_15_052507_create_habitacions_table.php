@@ -14,7 +14,11 @@ class CreateHabitacionsTable extends Migration
     public function up()
     {
         Schema::create('habitacions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->Integer('id')->unsigned();
+            $table->string('numero');
+            $table->Integer('hotel_id')->unsigned();
+            $table->primary('hotel_id','id');
+            $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->timestamps();
         });
     }

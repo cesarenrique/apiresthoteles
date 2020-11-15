@@ -16,4 +16,12 @@ class Habitacion extends Model
       'hotel_id',
       'TipoHabitacion_id',
   ];
+
+  public function pertenece(){
+      return $this->belongsTo(Hotel::class);
+  }
+
+  public function esdetipo(){
+      return $this->belongsTo(TipoHabitacion::class);
+  }
 }

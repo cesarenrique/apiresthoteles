@@ -14,7 +14,10 @@ class CreateTarjetasTable extends Migration
     public function up()
     {
         Schema::create('tarjetas', function (Blueprint $table) {
-            $table->increments('id');
+            $table->Integer('id')->unsigned();
+            $table->string('numero');
+            $table->Integer('Cliente_id')->unsigned();
+            $table->primary('id','Cliente_id');
             $table->timestamps();
         });
     }

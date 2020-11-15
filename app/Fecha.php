@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Temporada;
 
 class Fecha extends Model
 {
@@ -14,4 +15,8 @@ class Fecha extends Model
   protected $fillable = [
       'fecha',
   ];
+
+  public function pertenece(){
+      return $this->belongsTo(Temporada::class);
+  }
 }

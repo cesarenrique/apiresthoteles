@@ -13,5 +13,6 @@ class TipoHabitacion extends Model
    */
   protected $fillable = [
       'tipo',
+      'hotel_id',
   ];
 }

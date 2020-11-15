@@ -14,4 +14,8 @@ class Resguardo extends Model
   protected $fillable = [
       'pagado',
   ];
+
+  public function pertenecePago(){
+      return $this->belongsTo(Reserva::class);
+  }
 }

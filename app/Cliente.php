@@ -15,4 +15,11 @@ class Cliente extends Model
       'nombre',
       'NIF',
   ];
+
+  public function tiene(){
+      return $this->hasMany(Tarjeta::class)
+  }
+
+  
+
 }

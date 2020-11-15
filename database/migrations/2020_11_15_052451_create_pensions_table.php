@@ -15,6 +15,8 @@ class CreatePensionsTable extends Migration
     {
         Schema::create('pensions', function (Blueprint $table) {
             $table->increments('id');
+            $table->Integer('hotel_id')->unsigned();
+            $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->timestamps();
         });
     }

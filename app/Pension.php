@@ -15,4 +15,8 @@ class Pension extends Model
       'tipo',
       'hotel_id',
   ];
+
+  public function tiene(){
+      return $this->belongsTo(Hotel::class);
+  }
 }

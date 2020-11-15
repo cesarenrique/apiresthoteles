@@ -17,4 +17,12 @@ class Precios extends Model
       'TipoHabitacion_id',
       'Temporada_id',
   ];
+
+  public function vender(){
+      return $this->belongsTo(Pension_TipoHabitacion::class);
+  }
+
+  public function pertenece(){
+      return $this->belongsTo(Temporada::class);
+  }
 }
