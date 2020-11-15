@@ -14,4 +14,8 @@ class ResguardoHotel extends Model
   protected $fillable = [
       'porcentaje',
   ];
+
+  public function resguardoMinimo(){
+     $this->hasOne(Hotel::class);
+  }
 }

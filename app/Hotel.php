@@ -14,5 +14,15 @@ class Hotel extends Model
   protected $fillable = [
       'nombre',
       'NIF',
+      'localidad',
+      'provincia',
+      'comunidad',
+      'pais',
   ];
+
+  public function resguardoMinimo(){
+      return $this->hasOne(ResguardoHotel::class);
+  }
+
+
 }

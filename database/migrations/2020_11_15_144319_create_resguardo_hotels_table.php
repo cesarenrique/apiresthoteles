@@ -15,6 +15,8 @@ class CreateResguardoHotelsTable extends Migration
     {
         Schema::create('resguardo_hotels', function (Blueprint $table) {
             $table->increments('id');
+            $table->Integer('Hotel_id')->unsigned();
+            $table->unique('Hotel_id');
             $table->timestamps();
         });
     }

@@ -15,4 +15,8 @@ class Tarjeta extends Model
       'numero',
       'Cliente_id',
   ];
+
+  public function pertenece(){
+      return $this->belongsTo(Cliente::class);
+  }
 }

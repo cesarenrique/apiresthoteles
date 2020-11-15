@@ -15,6 +15,11 @@ class CreateResguardosTable extends Migration
     {
         Schema::create('resguardos', function (Blueprint $table) {
             $table->increments('id');
+            $table->Integer('Fecha_id')->unsigned();
+            $table->Integer('Pension_id')->unsigned();
+            $table->Integer('TipoHabitacion_id')->unsigned();
+            $table->string('pagado');
+            //$table->unique('Fecha_id','Pension_id','TipoHabitacion_id');
             $table->timestamps();
         });
     }
