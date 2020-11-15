@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pension_TipoHabitacion extends Model
+class ResguardoHotel extends Model
 {
   /**
    * The attributes that are mass assignable.
@@ -12,7 +12,6 @@ class Pension_TipoHabitacion extends Model
    * @var array
    */
   protected $fillable = [
-      'Pension_id',
-      'TipoHabitacion_id',
+      'porcentaje',
   ];
 }
