@@ -20,5 +20,17 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+        'verified'=> $verificado= $faker->randomElement([User::USUARIO_VERIFICADO,User::USUARIO_NO_VERIFICADO]),
+        'verification_token'=> $verificado== User::USUARIO_VERIFICADO ? null : User::generateVerificationToken(),
+        'tipo_usuario' => $faker->randomElement([User::USUARIO_CLIENTE,User:USUARIO_EDITOR,User::USUARIO_ADMINISTRADOR]),
+    ];
+});
+
+$factory->define(App\User::class, function (Faker\Generator $faker) {
+    static $password;
+
+    return [
+      'nombre' => $faker->name,
+      'NIF' => $faker->taxpayerIdentificationNumber,
     ];
 });
