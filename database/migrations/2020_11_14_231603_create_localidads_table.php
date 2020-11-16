@@ -16,10 +16,10 @@ class CreateLocalidadsTable extends Migration
         Schema::create('localidads', function (Blueprint $table) {
             $table->Integer('id')->unsigned();
             $table->string('nombre');
-            $table->Integer('Pais_id_localidades')->unsigned();
+            $table->Integer('Pais_id')->unsigned();
             $table->Integer('Provincia_id')->unsigned();
-            $table->primary(['Pais_id_localidades','Provincia_id','id']);
-            $table->foreign('Pais_id_localidades','Provincia_id')->references('Pais_id','id')->on('provincias');
+            $table->primary('Provincia_id','id');
+            $table->foreign('Pais_id','Provincia_id')->references('Pais_id','id')->on('provincias');
             $table->timestamps();
         });
     }

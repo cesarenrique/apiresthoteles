@@ -17,10 +17,10 @@ class CreateHotelsTable extends Migration
             $table->increments('id');
             $table->string('NIF');
             $table->string('nombre');
-            $table->string('localidad');
-            $table->string('provincia');
-            $table->string('comunidad');
-            $table->string('pais');
+
+            $table->Integer('Provincia_id')->unsigned();
+            $table->Integer('Localidad_id')->unsigned();
+            $table->foreign('Provincia_id','Localidad_id')->references('Provincia_id','id')->on('localidads');
             $table->timestamps();
         });
     }
