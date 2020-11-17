@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pension extends Model
 {
+  //basicos
+  const SOLO_ALOJAMIENTO="solo alojamiento";
+  const PENSION_DESAYUNO="solo desayuno";
+  const PENSION_COMPLETA="desayuno y comida";
+  const PENSION_COMPLETA_CENA="desayuno, comida y cena";
   /**
    * The attributes that are mass assignable.
    *
@@ -13,10 +18,10 @@ class Pension extends Model
    */
   protected $fillable = [
       'tipo',
-      'hotel_id',
+
   ];
 
   public function tiene(){
-      return $this->belongsTo(Hotel::class);
+      return $this->hasMany(Hotel::class);
   }
 }

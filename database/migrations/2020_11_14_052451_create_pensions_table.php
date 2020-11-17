@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateResguardoHotelsTable extends Migration
+class CreatePensionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateResguardoHotelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('resguardo_hotels', function (Blueprint $table) {
+        Schema::create('pensions', function (Blueprint $table) {
             $table->increments('id');
-            $table->Integer('Hotel_id')->unsigned();
-            $table->unique('Hotel_id');
+            $table->string('tipo');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateResguardoHotelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('resguardo_hotels');
+        Schema::dropIfExists('pensions');
     }
 }

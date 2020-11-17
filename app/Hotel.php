@@ -17,6 +17,7 @@ class Hotel extends Model
       'Localidad_id',
       'Provincia_id',
       'Pais_id',
+      'Pension_id',
   ];
 
   public function resguardoMinimo(){

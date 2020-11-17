@@ -15,7 +15,7 @@ class CreateTemporadasTable extends Migration
     {
         Schema::create('temporadas', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('tipo');
+            $table->string('tipo')->unique();
             $table->timestamps();
         });
     }

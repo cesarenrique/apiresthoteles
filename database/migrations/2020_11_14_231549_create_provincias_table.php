@@ -17,7 +17,7 @@ class CreateProvinciasTable extends Migration
             $table->Integer('id')->unsigned();
             $table->string('nombre');
             $table->Integer('Pais_id')->unsigned();
-            $table->primary('Pais_id','id');
+            $table->primary(['Pais_id','id']);
             $table->foreign('Pais_id')->references('id')->on('pais');
             $table->timestamps();
         });
