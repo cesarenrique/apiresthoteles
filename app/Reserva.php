@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reserva extends Model
 {
+
+  const RESERVA_ACEPTADA="Aceptado";
   /**
    * The attributes that are mass assignable.
    *

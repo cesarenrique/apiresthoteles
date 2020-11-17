@@ -16,8 +16,8 @@ class CreateFechasTable extends Migration
         Schema::create('fechas', function (Blueprint $table) {
             $table->increments('id');
             $table->date('fecha');
-            //$table->integer('Temporada_id')->unsigned();
-            //$table->foreign('Temporada_id')->references('id')->on('temporadas');
+            $table->integer('Temporada_id')->unsigned();
+            $table->foreign('Temporada_id')->references('id')->on('temporadas');
             $table->timestamps();
 
         });

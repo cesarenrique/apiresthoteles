@@ -17,9 +17,9 @@ class Cliente extends Model
   ];
 
   public function tiene(){
-      return $this->hasMany(Tarjeta::class)
+      return $this->hasMany(Tarjeta::class);
   }
 
-  
+
 
 }

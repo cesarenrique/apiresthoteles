@@ -14,13 +14,15 @@ class CreatePreciosTable extends Migration
     public function up()
     {
         Schema::create('precios', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('precio');
             $table->Integer('Pension_id')->unsigned();
             $table->Integer('TipoHabitacion_id')->unsigned();
             $table->Integer('Temporada_id')->unsigned();
-            $table->primary('Pension_id','TipoHabitacion_id');
-            $table->foreign('Pension_id','TipoHabitacion_id')->references('Pension_id','TipoHabitacion_id')->on('pension__tipo_habitacions');
-            $table->foreign('Temporada_id')->references('id')->on('temporadas');
+            $table->Integer('Hotel_id')->unsigned();
+            //$table->unique(['Pension_id','TipoHabitacion_id','Temporada_id','Hotels_id']);
+            //$table->foreign('Pension_id','TipoHabitacion_id','Temporada_id')->references('Pension_id','TipoHabitacion_id','Temporada_id')->on('alojamientos');
+            $table->foreign('Hotel_id')->references('id')->on('hotels');
             $table->timestamps();
         });
     }

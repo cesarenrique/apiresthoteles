@@ -16,13 +16,14 @@ class Precios extends Model
       'Pension_id',
       'TipoHabitacion_id',
       'Temporada_id',
+      'Hotel_id',
   ];
 
   public function vender(){
-      return $this->belongsTo(Pension_TipoHabitacion::class);
+      return $this->belongsTo(Alojamiento::class);
   }
 
   public function pertenece(){
-      return $this->belongsTo(Temporada::class);
+      return $this->belongsTo(Hotel::class);
   }
 }

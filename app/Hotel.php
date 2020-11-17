@@ -14,10 +14,10 @@ class Hotel extends Model
   protected $fillable = [
       'nombre',
       'NIF',
-      'localidad',
-      'provincia',
-      'comunidad',
-      'pais',
+      'Localidad_id',
+      'Provincia_id',
+      'Pais_id',
+      'Pension_id',
   ];
 
   public function resguardoMinimo(){

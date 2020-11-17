@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePensionsTable extends Migration
+class CreateResguardosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreatePensionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('pensions', function (Blueprint $table) {
+        Schema::create('resguardos', function (Blueprint $table) {
             $table->increments('id');
-            $table->Integer('hotel_id')->unsigned();
-            $table->foreign('hotel_id')->references('id')->on('hotels');
+            $table->Integer('Fecha_id')->unsigned();
+            $table->Integer('Habitacion_id')->unsigned();
+            $table->Integer('Hotel_id')->unsigned();
+            $table->string('pagado');
+            $table->unique(['Fecha_id','Habitacion_id','Hotel_id']);
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreatePensionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pensions');
+        Schema::dropIfExists('resguardos');
     }
 }
