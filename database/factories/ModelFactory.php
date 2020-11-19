@@ -106,7 +106,7 @@ $factory->define(App\Habitacion::class, function (Faker\Generator $faker) {
     $hotel= Hotel::All()->random();
     $tipo= TipoHabitacion::All()->random();
     return [
-       'id'=> $faker->unique()->randomNumber($nbDigits = 7, $strict = false),
+       'id'=> $faker->unique()->randomNumber($nbDigits = 6, $strict = false),
        'numero'=> strval($faker->unique()->numberBetween($min=1,$max=9000)),
        'Hotel_id'=> $hotel->id,
        'TipoHabitacion_id'=> $tipo->id,

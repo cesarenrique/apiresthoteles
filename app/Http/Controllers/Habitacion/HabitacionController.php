@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Habitacion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Habitacion;
+use App\Hotel;
+use App\Id;
+use App\TipoHabitacion;
 
 class HabitacionController extends Controller
 {
@@ -38,9 +41,33 @@ class HabitacionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
-        //
+      $hotel=Hotel::findOrFail($id);
+      $reglas= [
+          'numero'=>'required',
+          'TipoHabitacion_id'=> 'required',
+      ];
+
+      $this->validate($request,$reglas);
+
+      $existe=Habitacion::where('Hotel_id',$hotel->id)->where('numero',$request->numero)->first();
+      if($existe!=null){
+        return response()->json(['error'=>'El numero de habitacion existe en dicho hotel','code'=>409],409);
+      }
+      $campos= $request->all();
+      $campos['Hotel_id']=$hotel->id."";
+
+      $nuevoId=Id::where('nombre','habitacions')->first();
+
+      $campos['id']=$nuevoId->posicion."";
+      $nuevoId->posicion+=1;
+      $nuevoId->save();
+
+
+      $habitacion = Habitacion::create($campos);
+
+      return response()->json(['data'=>$habitacion],201);
     }
 
     /**
@@ -49,9 +76,12 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($hotel,$id)
     {
-        //
+      $hotel=Hotel::findOrFail($hotel);
+      $habitacion=Habitacion::findOrFail($id);
+
+      return response()->json(['data' => $habitacion],200);
     }
 
     /**
@@ -72,9 +102,42 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $hotel, $id)
     {
-        //
+      $hotel=Hotel::findOrFail($hotel);
+      /*
+      $reglas= [
+          'numero'=>'required',
+          'TipoHabitacion_id'=> 'required',
+      ];
+
+      $this->validate($request,$reglas);
+      */
+      $habitacion=Habitacion::findOrFail($id);
+
+      if($request->has('numero')){
+
+        $existe=Habitacion::where('Hotel_id',$hotel->id)->where('numero',$request->numero)->first();
+
+        if($existe!=null && $existe->id!=$habitacion->id){
+          return response()->json(['error'=>'El numero de habitacion existe en dicho hotel','code'=>409],409);
+        }
+        $habitacion->numero=$request->numero;
+      }
+
+      if($request->has('TipoHabitacion_id')){
+        $tipo=TipoHabitacion::where('id',$request->TipoHabitacion_id)->first();
+        if($tipo==null){
+
+            return response()->json(['error'=>'El tipo de habitacion no existe en clases tipos habitacion','code'=>409],409);
+        }
+        $habitacion->TipoHabitacion_id=$request->TipoHabitacion_id;
+      }
+
+
+      $habitacion->save();
+
+      return response()->json(['data'=>$habitacion],200);
     }
 
     /**

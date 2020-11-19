@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
         factory(ResguardoHotel::class,$cantidadResguardoHotel)->create();
         factory(Resguardo::class,$cantidadResguardo)->create();
 
+        DB::statement('Insert into ids (nombre,posicion) values ("habitacions",1000000 )');
         DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
         // $this->call(UsersTableSeeder::class);
 
