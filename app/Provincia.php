@@ -12,6 +12,7 @@ class Provincia extends Model
    * @var array
    */
   protected $fillable = [
+      'id',
       'nombre',
       'Pais_id',
   ];

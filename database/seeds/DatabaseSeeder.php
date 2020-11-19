@@ -70,8 +70,8 @@ class DatabaseSeeder extends Seeder
         factory(Pais::class,$cantidadPaises)->create();
         factory(Provincia::class,$cantidadProvincias)->create();
         factory(Localidad::class,$cantidadLocalidades)->create();
-        factory(Pension::class,$cantidadPension)->create();
         factory(Hotel::class,$cantidadHoteles)->create();
+        factory(Pension::class,$cantidadPension)->create();
         factory(TipoHabitacion::class,$cantidadTipoHabitacion)->create();
         factory(Habitacion::class,$cantidadHabitaciones)->create();
         factory(Temporada::class,$cantidadTemporadas)->create();

@@ -15,6 +15,7 @@ use App\Habitacion;
 use App\Reserva;
 use App\Precios;
 use App\ResguardoHotel;
+use App\Resguardo;
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -70,9 +71,10 @@ $factory->define(App\Localidad::class, function (Faker\Generator $faker) {
     ];
 });
 $factory->define(App\Pension::class, function (Faker\Generator $faker) {
+    $hotel=Hotel::All()->random();
     return [
        'tipo'=> $faker->unique()->randomElement([Pension::SOLO_ALOJAMIENTO,Pension::PENSION_DESAYUNO,Pension::PENSION_COMPLETA,Pension::PENSION_COMPLETA_CENA]),
-
+       'Hotel_id'=>$hotel->id,
     ];
 });
 $factory->define(App\Hotel::class, function (Faker\Generator $faker) {
@@ -83,13 +85,13 @@ $factory->define(App\Hotel::class, function (Faker\Generator $faker) {
       $aux=$faker->randomDigit;
       $values=$values .  strval($aux);
     }
-    $pension=Pension::All()->random();
+    $pais= $localidad->Pais_id;
     return [
       'nombre' => $faker->name,
       'NIF' => $values,
       'Provincia_id'=> $provincia,
       'Localidad_id'=> $localidad->id,
-      'Pension_id'=>$pension->id,
+      'Pais_id'=>$pais,
     ];
 });
 
@@ -229,7 +231,7 @@ $factory->define(App\Reserva::class, function (Faker\Generator $faker) {
        'TipoHabitacion_id'=>$elegido[1]->TipoHabitacion_id,
        'Cliente_id'=>$cliente->id,
        'Temporada_id'=>$elegido[0]->Temporada_id,
-       'Estado'=> Reserva::RESERVA_ACEPTADA,
+
     ];
 });
 $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
@@ -250,7 +252,7 @@ $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 $factory->define(App\Resguardo::class, function (Faker\Generator $faker) {
 
   $precios=DB::select('select Fecha_id,p.Pension_id ,p.TipoHabitacion_id,Habitacion_id,
-p.Hotel_id, Cliente_id, p.Temporada_id, precio,Estado, porcentaje 
+p.Hotel_id, Cliente_id, p.Temporada_id, precio, porcentaje
 from  reservas r2,precios p, resguardo_hotels rh
 where r2.Hotel_id =p.Hotel_id
 and r2.Hotel_id  =rh.Hotel_id
@@ -265,6 +267,6 @@ and r2.TipoHabitacion_id =p.TipoHabitacion_id');
        'Fecha_id'=>$precio->Fecha_id,
        'Habitacion_id'=> $precio->Habitacion_id,
        'Hotel_id'=> $precio->Hotel_id,
-
+       'Estado'=> Resguardo::RESERVA_ACEPTADA,
     ];
 });

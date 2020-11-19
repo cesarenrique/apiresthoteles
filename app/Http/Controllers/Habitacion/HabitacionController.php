@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Habitacion;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Habitacion;
 
 class HabitacionController extends Controller
 {
@@ -12,9 +13,13 @@ class HabitacionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $habitacion=Habitacion::where('Hotel_id',$id)->firstOrFail();
+        $habitaciones=Habitacion::where('Hotel_id',$id)->get();
+
+
+        return response()->json(['data'=>$habitaciones],200);
     }
 
     /**
