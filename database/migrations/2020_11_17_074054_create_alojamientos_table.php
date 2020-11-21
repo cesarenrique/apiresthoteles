@@ -14,10 +14,11 @@ class CreateAlojamientosTable extends Migration
     public function up()
     {
         Schema::create('alojamientos', function (Blueprint $table) {
+          $table->increments('id');
           $table->Integer('Pension_id')->unsigned();
           $table->Integer('TipoHabitacion_id')->unsigned();
           $table->Integer('Temporada_id')->unsigned();
-          $table->primary(['Pension_id','TipoHabitacion_id','Temporada_id']);
+          $table->unique(['Pension_id','TipoHabitacion_id','Temporada_id']);
           $table->foreign('Pension_id')->references('id')->on('pensions');
           $table->foreign('TipoHabitacion_id')->references('id')->on('tipo_habitacions');
           $table->foreign('Temporada_id')->references('id')->on('temporadas');

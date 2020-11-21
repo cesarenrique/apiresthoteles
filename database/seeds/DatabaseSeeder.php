@@ -61,10 +61,10 @@ class DatabaseSeeder extends Seeder
         $cantidadClientes=1000;
         $cantidadTarjetas=1000;
         $cantidadAlojamiento=36;
-        $cantidadPrecios=500;
-        $cantidadReservas=200;
-        $cantidadResguardoHotel=50;
-        $cantidadResguardo=10;
+        $cantidadPrecios=50;
+        $cantidadReservas=50;
+
+        $cantidadResguardo=50;
 
         factory(User::class,$cantidadUsuarios)->create();
         factory(Pais::class,$cantidadPaises)->create();
@@ -81,6 +81,9 @@ class DatabaseSeeder extends Seeder
         factory(Alojamiento::class,$cantidadAlojamiento)->create();
         factory(Precios::class,$cantidadPrecios)->create();
         factory(Reserva::class,$cantidadReservas)->create();
+
+        $cantidadResguardoHotel=Reserva::distinct()->count('Hotel_id');
+
         factory(ResguardoHotel::class,$cantidadResguardoHotel)->create();
         factory(Resguardo::class,$cantidadResguardo)->create();
 

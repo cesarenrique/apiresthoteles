@@ -146,9 +146,15 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($hotel,$id)
     {
-        //
+      $hotel= Hotel::findOrFail($hotel);
+      $habitacion= Habitacion::findOrFail($id);
+
+      $habitacion->delete();
+
+      return response()->json(['data' => $habitacion],200);
+
     }
 
     /**
@@ -157,8 +163,8 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function libre($id){
-      //
+    public function libre(Request $request,$hotel,$id){
+
     }
 
     /**

@@ -20,6 +20,7 @@ class CreatePreciosTable extends Migration
             $table->Integer('TipoHabitacion_id')->unsigned();
             $table->Integer('Temporada_id')->unsigned();
             $table->Integer('Hotel_id')->unsigned();
+            //controlar mediante programacion
             //$table->unique(['Pension_id','TipoHabitacion_id','Temporada_id','Hotels_id']);
             //$table->foreign('Pension_id','TipoHabitacion_id','Temporada_id')->references('Pension_id','TipoHabitacion_id','Temporada_id')->on('alojamientos');
             $table->foreign('Hotel_id')->references('id')->on('hotels');

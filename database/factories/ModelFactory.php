@@ -181,7 +181,7 @@ $factory->define(App\Alojamiento::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Precios::class, function (Faker\Generator $faker) {
 
-    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 100');
+    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 20');
     $alojamientos= Alojamiento::where('Pension_id','>',0)->get();
     $combinaciones=array();
     foreach ($alojamientos as $alojamiento) {
@@ -206,28 +206,31 @@ $factory->define(App\Precios::class, function (Faker\Generator $faker) {
 $factory->define(App\Reserva::class, function (Faker\Generator $faker) {
 
     $fechas= Fecha::All();
-    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 100');
+    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 20');
+    $precios=Precios::All();
 
     $combinaciones=array();
     foreach ($fechas as $fecha) {
       foreach ($habitaciones as $habitacion) {        // code...
-
-          $combinaciones[]=array($fecha,$habitacion);
-
+        foreach ($precios as $precio) {
+          // code...
+          if($habitacion->TipoHabitacion_id==$precio->TipoHabitacion_id &&
+               $habitacion->Hotel_id==$precio->Hotel_id &&
+                $fecha->Temporada_id==$precio->Temporada_id){
+            $combinaciones[]=array($fecha,$habitacion,$precio->Pension_id);
+          }
+        }
       }
     }
     $elegido=$faker->unique()->randomElement($combinaciones);
 
     $cliente=Cliente::All()->random();
 
-    $alojamiento=Alojamiento::where('TipoHabitacion_id',$elegido[1]->TipoHabitacion_id)->where('Temporada_id',$elegido[0]->Temporada_id)->first();
-
-    $pension=$alojamiento->Pension_id;
     return [
        'Fecha_id'=>$elegido[0]->id,
        'Habitacion_id'=> $elegido[1]->id,
        'Hotel_id'=> $elegido[1]->Hotel_id,
-       'Pension_id'=>$pension,
+       'Pension_id'=>$elegido[2],
        'TipoHabitacion_id'=>$elegido[1]->TipoHabitacion_id,
        'Cliente_id'=>$cliente->id,
        'Temporada_id'=>$elegido[0]->Temporada_id,
@@ -252,18 +255,25 @@ $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 $factory->define(App\Resguardo::class, function (Faker\Generator $faker) {
 
   $precios=DB::select('select Fecha_id,p.Pension_id ,p.TipoHabitacion_id,Habitacion_id,
-p.Hotel_id, Cliente_id, p.Temporada_id, precio, porcentaje
-from  reservas r2,precios p, resguardo_hotels rh
+p.Hotel_id, Cliente_id, p.Temporada_id, precio
+from  reservas r2,precios p
 where r2.Hotel_id =p.Hotel_id
-and r2.Hotel_id  =rh.Hotel_id
 and r2.Pension_id =p.Pension_id
 and r2.Temporada_id =p.Temporada_id
 and r2.TipoHabitacion_id =p.TipoHabitacion_id');
 
     $precio=$faker->unique()->randomElement($precios);
 
+    $resguardoHotel=ResguardoHotel::where('Hotel_id',$precio->Hotel_id)->first();
+    $pagado="";
+    if($resguardoHotel!=null){
+      $pagado=(floatval($faker->numberBetween($min = $resguardoHotel->porcentaje, $max = 100))/100)*$precio->precio;
+    }else{
+      $pagado=$precio->precio;
+    }
     return [
-       'pagado'=> (floatval($faker->numberBetween($min = $precio->porcentaje, $max = 100))/100)*$precio->precio,
+       'precio'=>$precio->precio,
+       'pagado'=> $pagado,
        'Fecha_id'=>$precio->Fecha_id,
        'Habitacion_id'=> $precio->Habitacion_id,
        'Hotel_id'=> $precio->Hotel_id,
