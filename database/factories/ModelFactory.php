@@ -224,7 +224,7 @@ $factory->define(App\Reserva::class, function (Faker\Generator $faker) {
     }
     $elegido=$faker->unique()->randomElement($combinaciones);
 
-    $cliente=Cliente::All()->random();
+
 
     return [
        'Fecha_id'=>$elegido[0]->id,
@@ -232,18 +232,14 @@ $factory->define(App\Reserva::class, function (Faker\Generator $faker) {
        'Hotel_id'=> $elegido[1]->Hotel_id,
        'Pension_id'=>$elegido[2],
        'TipoHabitacion_id'=>$elegido[1]->TipoHabitacion_id,
-       'Cliente_id'=>$cliente->id,
        'Temporada_id'=>$elegido[0]->Temporada_id,
-
     ];
 });
 $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 
       $reservas=Reserva::All();
       foreach ($reservas as $reserva) {        // code...
-
           $combinaciones[]=$reserva->Hotel_id;
-
       }
       $hotel= $faker->unique()->randomElement($combinaciones);
     return [
@@ -254,8 +250,8 @@ $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 });
 $factory->define(App\Resguardo::class, function (Faker\Generator $faker) {
 
-  $precios=DB::select('select Fecha_id,p.Pension_id ,p.TipoHabitacion_id,Habitacion_id,
-p.Hotel_id, Cliente_id, p.Temporada_id, precio
+  $precios=DB::select('select r2.id,Fecha_id,p.Pension_id ,p.TipoHabitacion_id,Habitacion_id,
+p.Hotel_id, p.Temporada_id, precio
 from  reservas r2,precios p
 where r2.Hotel_id =p.Hotel_id
 and r2.Pension_id =p.Pension_id
@@ -271,12 +267,21 @@ and r2.TipoHabitacion_id =p.TipoHabitacion_id');
     }else{
       $pagado=$precio->precio;
     }
+
+    $estado=$faker->randomElement([Resguardo::RESERVA_ACEPTADA,Resguardo::RESERVA_FALLIDA]);
+
+    if($estado==Resguardo::RESERVA_ACEPTADA){
+      DB::statement('UPDATE reservas SET reservado="'.Reserva::RESERVADO.'" WHERE id='.$precio->id);
+    }
+
+    $cliente=Cliente::All()->random();
     return [
        'precio'=>$precio->precio,
        'pagado'=> $pagado,
        'Fecha_id'=>$precio->Fecha_id,
        'Habitacion_id'=> $precio->Habitacion_id,
        'Hotel_id'=> $precio->Hotel_id,
-       'Estado'=> Resguardo::RESERVA_ACEPTADA,
+       'Cliente_id'=>$cliente->id,
+       'Estado'=> $estado,
     ];
 });

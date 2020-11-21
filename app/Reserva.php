@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Reserva extends Model
 {
 
-
+  const LIBRE='libre';
+  const RESERVADO='reservado';
   /**
    * The attributes that are mass assignable.
    *
@@ -18,7 +19,6 @@ class Reserva extends Model
       'TipoHabitacion_id',
       'Habitacion_id',
       'Hotel_id',
-      'Cliente_id',
       'Fecha_id',
 
   ];

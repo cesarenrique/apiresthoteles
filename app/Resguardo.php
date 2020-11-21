@@ -14,7 +14,16 @@ class Resguardo extends Model
    * @var array
    */
   protected $fillable = [
+      'precio',
       'pagado',
+      'Estado',
+      'Cliente_id',
+      'Fecha_id',
+      'habitacion_id',
+      'Hotel_id',
+      'Fecha_id',
+
+
   ];
 
   public function pertenecePago(){

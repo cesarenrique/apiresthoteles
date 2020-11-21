@@ -8,6 +8,8 @@ use App\Habitacion;
 use App\Hotel;
 use App\Id;
 use App\TipoHabitacion;
+use App\Fecha;
+use App\Reserva;
 
 class HabitacionController extends Controller
 {
@@ -163,7 +165,36 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function libre(Request $request,$hotel,$id){
+    public function libre(Request $request,$hotel_id,$id){
+        $hotel= Hotel::findOrFail($hotel_id);
+
+        $habitacion=Habitacion::findOrFail($id);
+
+        if(!$request->has('desde') || !($request->has('hasta'))) {
+           return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
+        }
+        $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->get();
+        $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->first();
+        if($prueba==null){
+          return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
+        }
+
+
+        $i=0;
+        $j=0;
+        $libres=array();
+        foreach ($fechas as $fecha ) {
+          $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::LIBRE)->first();
+          if($aux!=null ) {
+            $libres[]=array_push($libres, array($j.""=> $fecha));
+            $j++;
+          }
+          $i++;
+        }
+
+
+
+        return response()->json(['data' => $libres],200);
 
     }
 
@@ -173,8 +204,36 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function ocupada($id){
-      //
+    public function ocupada(Request $request,$hotel_id,$id){
+      $hotel= Hotel::findOrFail($hotel_id);
+
+      $habitacion=Habitacion::findOrFail($id);
+
+      if(!$request->has('desde') || !($request->has('hasta'))) {
+         return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
+      }
+      $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->get();
+      $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->first();
+      if($prueba==null){
+        return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
+      }
+
+
+      $i=0;
+      $j=0;
+      $libres=array();
+      foreach ($fechas as $fecha ) {
+        $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::RESERVADO)->first();
+        if($aux!=null ) {
+          $libres[]=array_push($libres, array($j.""=> $fecha));
+          $j++;
+        }
+        $i++;
+      }
+
+
+
+      return response()->json(['data' => $libres],200);
     }
 
     /**
