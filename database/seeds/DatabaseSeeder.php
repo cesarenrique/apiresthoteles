@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
+
+        rellenarID();
+
         User::truncate();
         Pais::truncate();
         Provincia::truncate();
@@ -91,5 +94,12 @@ class DatabaseSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
         // $this->call(UsersTableSeeder::class);
 
+    }
+
+    public function rellenarID(){
+        Id::truncate();
+        DB::statement(' Insert into ids (nombre,posicion) values ("provincias",1)');
+        DB::statement(' Insert into ids (nombre,posicion) values ("localidades",1)');
+        //DB::statement(' Insert into ids (nombre,posicion) values ("habitacions",1)');
     }
 }

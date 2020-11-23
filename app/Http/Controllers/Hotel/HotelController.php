@@ -201,4 +201,73 @@ class HotelController extends Controller
 
       return response()->json(['data' => $hotel],200);
     }
+
+    /**
+     * filtrar po lugar especifico
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function hotelPorLugar(Request $request){
+
+
+      $lugar="";
+      $hoteles="";
+
+      if($request->has('Localidad_id') || $request->has('Provincia_id')  || $request->has('Pais_id') ){
+
+        if($request->has('Localidad_id') && !($request->has('Provincia_id')  || $request->has('Pais_id')) ){
+          $lugar=Localidad::where('id',$request->Localidad_id)->first();
+          $hoteles= Hotel::where('Localidad_id',$lugar->id)->get();
+        }
+
+        elseif(!($request->has('Localidad_id')) && $request->has('Provincia_id')  && !($request->has('Pais_id')) ){
+          $lugar=Provincia::where('id',$request->Provincia_id)->first();
+          $hoteles= Hotel::where('Provincia_id',$lugar->id)->get();
+        }
+
+        elseif(!($request->has('Localidad_id') || $request->has('Provincia_id'))  && $request->has('Pais_id') ){
+          $lugar=Pais::where('Pais_id',$request->Pais_id)->first();
+          $hoteles= Hotel::where('Localidad_id',$lugar->id)->get();
+        }
+        elseif($request->has('Localidad_id') && $request->has('Provincia_id')  && !($request->has('Pais_id')) ){
+          $lugar=Localidad::where('id',$request->Localidad_id)->first();
+          if($lugar->Provincia_id==$request->Provincia_id){
+            $hoteles= Hotel::where('Localidad_id',$lugar->id)->get();
+          }else{
+            return response()->json(['error'=>'Provincia no coincide con localidad','code'=>409],409);
+          }
+        }elseif($request->has('Localidad_id') && !($request->has('Provincia_id'))  && $request->has('Pais_id')){
+          $lugar=Localidad::where('id',$request->Localidad_id)->first();
+          if($lugar->Pais_id==$request->Pais_id){
+            $hoteles= Hotel::where('Localidad_id',$lugar->id)->get();
+          }else{
+            return response()->json(['error'=>'Pais no coincide con localidad','code'=>409],409);
+          }
+
+        }elseif(!($request->has('Localidad_id')) && $request->has('Provincia_id')  && $request->has('Pais_id')){
+          $lugar=Provincia::where('id',$request->Provincia_id)->first();
+          if($lugar->Pais_id==$request->Pais_id){
+            $hoteles= Hotel::where('Provincia_id',$lugar->id)->get();
+          }else{
+            return response()->json(['error'=>'Provincia no coincide con pais','code'=>409],409);
+          }
+        }elseif($request->has('Localidad_id') && $request->has('Provincia_id')  && $request->has('Pais_id')){
+          $lugar=Localidad::where('id',$request->Localidad_id)->first();
+          if($lugar->Pais_id==$request->Pais_id && $lugar->Provincia_id==$request->Provincia_id){
+            $hoteles= Hotel::where('Localidad_id',$lugar->id)->get();
+          }else{
+            return response()->json(['error'=>'Pais o Provincia no coincide con localidad','code'=>409],409);
+          }
+        }else{
+          return response()->json(['error'=>'Pais o Provincia o localidad caso no contemplado por el servidor','code'=>409],409);
+        }
+      }else{
+        return response()->json(['error'=>'No tiene lugar por donde filtrar','code'=>409],409);
+      }
+      
+
+      return response()->json(['data'=>$hoteles],200);
+    }
 }
