@@ -78,11 +78,13 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($hotel,$id)
+    public function show($hotelId,$id)
     {
-      $hotel=Hotel::findOrFail($hotel);
-      $habitacion=Habitacion::findOrFail($id);
-
+      $hotel=Hotel::findOrFail($hotelId);
+      $habitacion=Habitacion::where('Hotel_id',$hotel->id)->where('id',Intval($id))->first();
+      if($habitacion==null){
+        return response()->json(['error'=>'El numero de habitacion existe en dicho hotel','code'=>404],404);
+      }
       return response()->json(['data' => $habitacion],200);
     }
 
@@ -104,9 +106,9 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $hotel, $id)
+    public function update(Request $request, $hotelId, $id)
     {
-      $hotel=Hotel::findOrFail($hotel);
+      $hotel=Hotel::findOrFail($hotelId);
       /*
       $reglas= [
           'numero'=>'required',
@@ -115,11 +117,13 @@ class HabitacionController extends Controller
 
       $this->validate($request,$reglas);
       */
-      $habitacion=Habitacion::findOrFail($id);
+      $habitacion=Habitacion::where('Hotel_id',$hotel->id)->where('id',Intval($id))->first();
+      if($habitacion==null){
+        return response()->json(['error'=>'El numero de habitacion existe en dicho hotel','code'=>404],404);
+      }
 
       if($request->has('numero')){
-
-        $existe=Habitacion::where('Hotel_id',$hotel->id)->where('numero',$request->numero)->first();
+        $existe=Habitacion::where('Hotel_id',$hotel->id)->where('id',Intval($id))->where('numero',$request->numero)->first();
 
         if($existe!=null && $existe->id!=$habitacion->id){
           return response()->json(['error'=>'El numero de habitacion existe en dicho hotel','code'=>409],409);

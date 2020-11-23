@@ -29,9 +29,14 @@ class CreateReservasTable extends Migration
             //Controlar con programacion
             //$table->unique(['Fecha_id','Pension_id','TipoHabitacion_id','Temporada_id','Hotel_id']);
             //$table->foreign('Pension_id','TipoHabitacion_id','Temporada_id','Hotel_id')->references('Pension_id','TipoHabitacion_id','Temporada_id','Hotels_id')->on('precios');
+            //alternativa clave foranea
+            $table->Integer('Alojamiento_id')->unsigned();
+            $table->foreign('Alojamiento_id')->references('id')->on('alojamientos');
+            $table->unique(['Fecha_id','Alojamiento_id']);
+            //fin de alternativa
             $table->foreign('Fecha_id')->references('id')->on('fechas');
-            $table->foreign('Temporada_id')->references('id')->on('temporadas');
-            $table->foreign('Hotel_id','Habitacion_id')->references('Hotel_id','id')->on('habitacions');
+            $table->foreign(['Hotel_id','Temporada_id'])->references(['Hotel_id','id'])->on('temporadas');
+            $table->foreign(['Hotel_id','Habitacion_id'])->references(['Hotel_id','id'])->on('habitacions');
 
             $table->timestamps();
         });

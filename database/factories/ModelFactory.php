@@ -13,7 +13,6 @@ use App\Alojamiento;
 use App\Fecha;
 use App\Habitacion;
 use App\Reserva;
-use App\Precios;
 use App\ResguardoHotel;
 use App\Resguardo;
 use App\Id;
@@ -118,19 +117,32 @@ $factory->define(App\TipoHabitacion::class, function (Faker\Generator $faker) {
 $factory->define(App\Habitacion::class, function (Faker\Generator $faker) {
     $hotel= Hotel::All()->random();
     $tipo= TipoHabitacion::All()->random();
+    $posicion=Id::where('nombre','habitacions')->where('ides',$hotel->id."")->first();
+    $pos=$posicion->posicion;
+    $posicion->posicion+=1;
+    $posicion->save();
+    $repetido=true;
+    $numero=0;
+    $numero=$faker->numberBetween($min=1,$max=200);
+    $ceros="";
+    if($numero<10) $ceros="00";
+    if(10<$numero && $numero<100) $ceros="0";
+    $numero=$pos.$ceros.$numero;
     return [
-       'id'=> $faker->unique()->randomNumber($nbDigits = 6, $strict = false),
-       'numero'=> strval($faker->unique()->numberBetween($min=1,$max=9000)),
+       'id'=> $pos,
+       'numero'=> $numero,
        'Hotel_id'=> $hotel->id,
        'TipoHabitacion_id'=> $tipo->id,
      ];
 });
+/*
 $factory->define(App\Temporada::class, function (Faker\Generator $faker) {
 
     return [
        'tipo'=> $faker->unique()->randomElement([Temporada::TEMPORADA_BAJA,Temporada::TEMPORADA_MEDIA,Temporada::TEMPORADA_ALTA]),
     ];
-});
+});*/
+/*
 $factory->define(App\Fecha::class, function (Faker\Generator $faker) {
     $temporada= Temporada::All()->random();
     return [
@@ -138,7 +150,7 @@ $factory->define(App\Fecha::class, function (Faker\Generator $faker) {
        'Temporada_id'=> $temporada->id,
 
     ];
-});
+});*/
 $factory->define(App\Cliente::class, function (Faker\Generator $faker) {
 
     $values="";
@@ -157,13 +169,19 @@ $factory->define(App\Cliente::class, function (Faker\Generator $faker) {
 });
 $factory->define(App\Tarjeta::class, function (Faker\Generator $faker) {
     $cliente=Cliente::All()->random();
+
+    $posicion=Id::where('nombre','habitacions')->where('ides',$cliente->id."")->first();
+    $pos=$posicion->posicion;
+    $posicion->posicion+=1;
+    $posicion->save();
     return [
-       'id'=> $faker->unique()->randomNumber($nbDigits = 7, $strict = false),
+       'id'=> $pos,
        'numero'=> $faker->creditCardNumber,
        'Cliente_id'=> $cliente->id,
 
     ];
 });
+/*
 $factory->define(App\Alojamiento::class, function (Faker\Generator $faker) {
 
 
@@ -188,66 +206,10 @@ $factory->define(App\Alojamiento::class, function (Faker\Generator $faker) {
        'Pension_id'=> $elegido[0],
        'TipoHabitacion_id'=> $elegido[1],
        'Temporada_id'=> $elegido[2],
-
+        'precio'=> strval($faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 2000)),
     ];
-});
+});*/
 
-$factory->define(App\Precios::class, function (Faker\Generator $faker) {
-
-    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 20');
-    $alojamientos= Alojamiento::where('Pension_id','>',0)->get();
-    $combinaciones=array();
-    foreach ($alojamientos as $alojamiento) {
-      foreach ($habitaciones as $habitacion) {
-
-          // code...
-
-          $combinaciones[]=array($alojamiento,$habitacion->Hotel_id);
-
-      }
-    }
-    $elegido=$faker->unique()->randomElement($combinaciones);
-
-    return [
-       'precio'=> strval($faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 2000)),
-       'Pension_id'=> $elegido[0]->Pension_id,
-       'TipoHabitacion_id'=> $elegido[0]->TipoHabitacion_id,
-       'Temporada_id'=>$elegido[0]->Temporada_id,
-       'Hotel_id'=> $elegido[1],
-    ];
-});
-$factory->define(App\Reserva::class, function (Faker\Generator $faker) {
-
-    $fechas= Fecha::All();
-    $habitaciones=DB::select('SELECT * FROM habitacions ORDER BY id asc LIMIT 20');
-    $precios=Precios::All();
-
-    $combinaciones=array();
-    foreach ($fechas as $fecha) {
-      foreach ($habitaciones as $habitacion) {        // code...
-        foreach ($precios as $precio) {
-          // code...
-          if($habitacion->TipoHabitacion_id==$precio->TipoHabitacion_id &&
-               $habitacion->Hotel_id==$precio->Hotel_id &&
-                $fecha->Temporada_id==$precio->Temporada_id){
-            $combinaciones[]=array($fecha,$habitacion,$precio->Pension_id);
-          }
-        }
-      }
-    }
-    $elegido=$faker->unique()->randomElement($combinaciones);
-
-
-
-    return [
-       'Fecha_id'=>$elegido[0]->id,
-       'Habitacion_id'=> $elegido[1]->id,
-       'Hotel_id'=> $elegido[1]->Hotel_id,
-       'Pension_id'=>$elegido[2],
-       'TipoHabitacion_id'=>$elegido[1]->TipoHabitacion_id,
-       'Temporada_id'=>$elegido[0]->Temporada_id,
-    ];
-});
 $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 
       $reservas=Reserva::All();

@@ -17,7 +17,7 @@ class CreateTarjetasTable extends Migration
             $table->Integer('id')->unsigned();
             $table->string('numero');
             $table->Integer('Cliente_id')->unsigned();
-            $table->primary('id','Cliente_id');
+            $table->primary(['Cliente_id','id']);
             $table->timestamps();
         });
     }

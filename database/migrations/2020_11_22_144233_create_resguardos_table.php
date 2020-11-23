@@ -24,8 +24,6 @@ class CreateResguardosTable extends Migration
             $table->Integer('Cliente_id')->unsigned();
             $table->unique(['Fecha_id','Habitacion_id','Hotel_id']);
             $table->foreign('Cliente_id')->references('id')->on('clientes');
-            // se controla con programacion
-            //$table->foreign(['Fecha_id','Habitacion_id','Hotel_id'])->references(['Fecha_id','Habitacion_id','Hotel_id'])->on('reserva__estado_reservas');
             $table->timestamps();
         });
     }

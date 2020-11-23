@@ -19,11 +19,12 @@ class CreateAlojamientosTable extends Migration
           $table->Integer('Pension_id')->unsigned();
           $table->Integer('TipoHabitacion_id')->unsigned();
           $table->Integer('Temporada_id')->unsigned();
+          $table->String('precio');
           //controlar con programacion
           //$table->unique(['Hotel_id','Pension_id','TipoHabitacion_id','Temporada_id']);
           $table->foreign(['Hotel_id','Pension_id'])->references(['Hotel_id','id'])->on('pensions');
           $table->foreign('TipoHabitacion_id')->references('id')->on('tipo_habitacions');
-          $table->foreign('Temporada_id')->references('id')->on('temporadas');
+          $table->foreign(['Hotel_id','Temporada_id'])->references(['Hotel_id','id'])->on('temporadas');
           $table->timestamps();
         });
     }
