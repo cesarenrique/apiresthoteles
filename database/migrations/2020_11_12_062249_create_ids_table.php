@@ -16,7 +16,9 @@ class CreateIdsTable extends Migration
         Schema::create('ids', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
+            $table->string('ides');
             $table->Integer('posicion')->unsigned();
+
             $table->timestamps();
         });
     }

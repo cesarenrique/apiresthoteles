@@ -16,6 +16,7 @@ use App\Reserva;
 use App\Precios;
 use App\ResguardoHotel;
 use App\Resguardo;
+use App\Id;
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -52,9 +53,12 @@ $factory->define(App\Pais::class, function (Faker\Generator $faker) {
 $factory->define(App\Provincia::class, function (Faker\Generator $faker) {
 
     $pais= Pais::All()->random();
-
+    $posicion=Id::where('nombre','provincias')->where('ides',$pais->id."")->first();
+    $pos=$posicion->posicion;
+    $posicion->posicion+=1;
+    $posicion->save();
     return [
-      'id'=> $faker->unique()->randomNumber($nbDigits = 3, $strict = false),
+      'id'=> $pos,
       'nombre' => $faker->state,
       'Pais_id'=> $pais->id,
     ];
@@ -62,36 +66,45 @@ $factory->define(App\Provincia::class, function (Faker\Generator $faker) {
 $factory->define(App\Localidad::class, function (Faker\Generator $faker) {
 
     $provincia= Provincia::All()->random();
-    $pais= $provincia->Pais_id;
+    $posicion=Id::where('nombre','localidads')->where('ides',$provincia->Pais_id."-".$provincia->id."")->first();
+    $pos=$posicion->posicion;
+    $posicion->posicion+=1;
+    $posicion->save();
     return [
-      'id'=> $faker->unique()->randomNumber($nbDigits = 6, $strict = false),
+      'id'=> $pos,
       'nombre' => $faker->city,
-      'Pais_id'=> $pais,
+      'Pais_id'=> $provincia->Pais_id,
       'Provincia_id'=> $provincia->id,
     ];
 });
-$factory->define(App\Pension::class, function (Faker\Generator $faker) {
-    $hotel=Hotel::All()->random();
-    return [
-       'tipo'=> $faker->unique()->randomElement([Pension::SOLO_ALOJAMIENTO,Pension::PENSION_DESAYUNO,Pension::PENSION_COMPLETA,Pension::PENSION_COMPLETA_CENA]),
-       'Hotel_id'=>$hotel->id,
-    ];
-});
+
 $factory->define(App\Hotel::class, function (Faker\Generator $faker) {
     $localidad= Localidad::All()->random();
-    $provincia= $localidad->Provincia_id;
     $values="";
     for($i=0;$i<8;$i++){
       $aux=$faker->randomDigit;
       $values=$values .  strval($aux);
     }
-    $pais= $localidad->Pais_id;
+
     return [
       'nombre' => $faker->name,
       'NIF' => $values,
-      'Provincia_id'=> $provincia,
+      'Provincia_id'=> $localidad->Provincia_id,
       'Localidad_id'=> $localidad->id,
-      'Pais_id'=>$pais,
+      'Pais_id'=>$localidad->Pais_id,
+    ];
+});
+
+$factory->define(App\Pension::class, function (Faker\Generator $faker) {
+    $hotel=Hotel::All()->random();
+    $posicion=Id::where('nombre','pensions')->where('ides',$hotel->id."")->first();
+    $pos=$posicion->posicion;
+    $posicion->posicion+=1;
+    $posicion->save();
+    return [
+       'id'=>$pos,
+       'tipo'=> $faker->randomElement([Pension::PENSION_DESAYUNO,Pension::PENSION_COMPLETA,Pension::PENSION_COMPLETA_CENA]),
+       'Hotel_id'=>$hotel->id,
     ];
 });
 

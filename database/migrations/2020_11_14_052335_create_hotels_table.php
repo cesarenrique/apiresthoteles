@@ -20,7 +20,7 @@ class CreateHotelsTable extends Migration
             $table->Integer('Provincia_id')->unsigned();
             $table->Integer('Localidad_id')->unsigned();
             $table->Integer('Pais_id')->unsigned();
-            $table->foreign('Provincia_id','Localidad_id')->references('Provincia_id','id')->on('localidads');
+            $table->foreign(['Pais_id','Provincia_id','Localidad_id'])->references(['Pais_id','Provincia_id','id'])->on('localidads');
             $table->foreign(['Pais_id','Provincia_id'])->references(['Pais_id','id'])->on('provincias');
             $table->timestamps();
         });

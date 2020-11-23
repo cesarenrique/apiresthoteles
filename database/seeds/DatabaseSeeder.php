@@ -18,6 +18,7 @@ use App\Precios;
 use App\Reserva;
 use App\ResguardoHotel;
 use App\Resguardo;
+use App\Id;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +31,7 @@ class DatabaseSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
 
-        rellenarID();
+        DatabaseSeeder::rellenarID();
 
         User::truncate();
         Pais::truncate();
@@ -55,8 +56,8 @@ class DatabaseSeeder extends Seeder
         $cantidadPaises=20;
         $cantidadProvincias=100;
         $cantidadLocalidades=300;
-        $cantidadPension=4;
         $cantidadHoteles=1000;
+        $cantidadPension=400;
         $cantidadTipoHabitacion=3;
         $cantidadHabitaciones=3000;
         $cantidadTemporadas=3;
@@ -70,12 +71,13 @@ class DatabaseSeeder extends Seeder
         $cantidadResguardo=50;
 
         factory(User::class,$cantidadUsuarios)->create();
-        factory(Pais::class,$cantidadPaises)->create();
-        factory(Provincia::class,$cantidadProvincias)->create();
+
+        factory(Pais::class,$cantidadPaises)->create(); DatabaseSeeder::rellenarIdPaises();
+        factory(Provincia::class,$cantidadProvincias)->create(); DatabaseSeeder::rellenarIdProvincias();
         factory(Localidad::class,$cantidadLocalidades)->create();
-        factory(Hotel::class,$cantidadHoteles)->create();
+        factory(Hotel::class,$cantidadHoteles)->create();DatabaseSeeder::rellenarIdHoteles();
         factory(Pension::class,$cantidadPension)->create();
-        factory(TipoHabitacion::class,$cantidadTipoHabitacion)->create();
+        /*factory(TipoHabitacion::class,$cantidadTipoHabitacion)->create();
         factory(Habitacion::class,$cantidadHabitaciones)->create();
         factory(Temporada::class,$cantidadTemporadas)->create();
         factory(Fecha::class,$cantidadFechas)->create();
@@ -91,15 +93,57 @@ class DatabaseSeeder extends Seeder
         factory(Resguardo::class,$cantidadResguardo)->create();
 
         DB::statement('Insert into ids (nombre,posicion) values ("habitacions",1000000 )');
+
+        */
+
         DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
         // $this->call(UsersTableSeeder::class);
 
     }
 
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function rellenarID(){
         Id::truncate();
-        DB::statement(' Insert into ids (nombre,posicion) values ("provincias",1)');
-        DB::statement(' Insert into ids (nombre,posicion) values ("localidades",1)');
+        //DB::statement(' Insert into ids (nombre,posicion) values ("provincias",1)');
+        //DB::statement(' Insert into ids (nombre,posicion) values ("localidads",1)');
         //DB::statement(' Insert into ids (nombre,posicion) values ("habitacions",1)');
     }
+
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function rellenarIdPaises(){
+        $paises=Pais::All();
+
+        foreach ($paises as $pais) {
+
+          DB::statement(' Insert into ids (nombre,posicion,ides) values ("provincias",1,"'.$pais->id.'")');
+        }
+    }
+
+    public function rellenarIdProvincias(){
+        $provincias=Provincia::All();
+
+        foreach ($provincias as $provincia) {
+
+          DB::statement(' Insert into ids (nombre,posicion,ides) values ("localidads",1,"'.$provincia->Pais_id.'-'.$provincia->id.'")');
+        }
+    }
+
+  public function rellenarIdHoteles(){
+    $hoteles=Hotel::All();
+    
+    foreach ($hoteles as $hotel) {
+
+      DB::statement(' Insert into pensions (id,tipo,Hotel_id) values (1,"'.Pension::SOLO_ALOJAMIENTO.'",'.$hotel->id.')');
+      DB::statement(' Insert into ids (nombre,posicion,ides) values ("pensions",2,"'.$hotel->id.'")');
+    }
+
+  }
 }

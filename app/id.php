@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class id extends Model
+class Id extends Model
 {
   /**
    * The attributes that are mass assignable.
@@ -14,5 +14,6 @@ class id extends Model
   protected $fillable = [
       'nombre',
       'posicion',
+      'ides',
   ];
 }
