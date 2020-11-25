@@ -170,7 +170,7 @@ $factory->define(App\Cliente::class, function (Faker\Generator $faker) {
 $factory->define(App\Tarjeta::class, function (Faker\Generator $faker) {
     $cliente=Cliente::All()->random();
 
-    $posicion=Id::where('nombre','habitacions')->where('ides',$cliente->id."")->first();
+    $posicion=Id::where('nombre','clientes')->where('ides',$cliente->id."")->first();
     $pos=$posicion->posicion;
     $posicion->posicion+=1;
     $posicion->save();
@@ -209,7 +209,7 @@ $factory->define(App\Alojamiento::class, function (Faker\Generator $faker) {
         'precio'=> strval($faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 2000)),
     ];
 });*/
-
+/*
 $factory->define(App\ResguardoHotel::class, function (Faker\Generator $faker) {
 
       $reservas=Reserva::All();
@@ -260,3 +260,4 @@ and r2.TipoHabitacion_id =p.TipoHabitacion_id');
        'Estado'=> $estado,
     ];
 });
+*/
