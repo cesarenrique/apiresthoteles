@@ -14,6 +14,8 @@ class Cliente extends Model
   protected $fillable = [
       'nombre',
       'NIF',
+      'email',
+      'telefono',
   ];
 
   public function tiene(){

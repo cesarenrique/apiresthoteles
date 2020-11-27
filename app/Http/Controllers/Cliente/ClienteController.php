@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cliente;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Cliente;
 
 class ClienteController extends Controller
 {
@@ -14,7 +15,10 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        //
+        $clientes=Cliente::All();
+
+        return response()->json(['data'=>$clientes],200);
+
     }
 
     /**
@@ -35,7 +39,20 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+      $reglas= [
+          'NIF'=>'required|unique:clientes',
+          'email'=> 'required|email|unique:clientes',
+          'nombre'=> 'required',
+      ];
+
+      $this->validate($request,$reglas);
+
+      $campos=$request->all();
+
+      $cliente = Cliente::create($campos);
+
+      return response()->json(['data'=>$cliente],200);
     }
 
     /**
@@ -46,7 +63,8 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        //
+        $cliente=Cliente::findOrFail($id);
+        return response()->json(['data'=>$cliente],200);
     }
 
     /**
@@ -69,7 +87,39 @@ class ClienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $cliente=Cliente::findOrFail($id);
+
+      $reglas= [
+          'NIF'=>'unique:clientes,NIF,'.$cliente->id,
+          'email'=> 'email|unique:clientes,email,'.$cliente->id,
+
+      ];
+
+      $this->validate($request,$reglas);
+
+      if($request->has('email') && $cliente->email != $request->email){
+        $cliente->email=$request->email;
+      }
+
+      if($request->has('NIF') && $cliente->NIF != $request->NIF){
+        $cliente->NIF=$request->NIF;
+      }
+
+      if($request->has('nombre')){
+        $cliente->nombre=$request->nombre;
+      }
+
+      if($request->has('telefono')){
+        $cliente->telefono=$request->telefono;
+      }
+
+      if(!$cliente->isDirty()){
+        return response()->json(['error'=>'Se debe especificar al menos un valor diferente para actualizar','code'=>422],422);
+
+      }
+      $cliente->save();
+
+      return response()->json(['data' => $cliente],200);
     }
 
     /**
@@ -80,6 +130,10 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        //
+      $cliente= Cliente::findOrFail($id);
+
+      $cliente->delete();
+
+      return response()->json(['data' => $cliente],200);
     }
 }

@@ -122,7 +122,7 @@ class UserController extends Controller
         $user->tipo_usuario=$request->tipo_usuario;
       }
 
-      if($user->isDirty()){
+      if(!$user->isDirty()){
         return response()->json(['error'=>'Se debe especificar al menos un valor diferente para actualizar','code'=>422],422);
 
       }
