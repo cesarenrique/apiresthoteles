@@ -44,5 +44,5 @@ Route::get('clientes/{cliente}/tarjetas/{tarjeta}','Tarjeta\TarjetaController@sh
 Route::put('clientes/{cliente}/tarjetas/{tarjeta}','Tarjeta\TarjetaController@update');
 Route::delete('clientes/{cliente}/tarjetas/{tarjeta}','Tarjeta\TarjetaController@destroy');
 //Route::get('clientes/{cliente}/tarjetas/{tarjeta}/edit','Tarjeta\TarjetaController@edit');
-
+Route::get('hotels/{hotel}/habitacions/{habitacion}/total','Habitacion\HabitacionController@total');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/reservar/{cliente}','Habitacion\HabitacionController@reservar');

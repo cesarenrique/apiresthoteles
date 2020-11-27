@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Pais;
 use App\Provincia;

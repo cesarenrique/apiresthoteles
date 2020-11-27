@@ -167,7 +167,7 @@ class DatabaseSeeder extends Seeder
 
     foreach ($hoteles as $hotel) {
 
-      $start_date = '2019-01-01';
+      $start_date = Fecha::INICIAL;
       $fecha = DateTime::createFromFormat('Y-m-d',$start_date);
       for($i=0;$i<20;$i++){
 
@@ -288,7 +288,7 @@ and r2.TipoHabitacion_id =a.TipoHabitacion_id');
       }
 
       $cliente=Cliente::All()->random();
-      DB::statement(' Insert into resguardos (Hotel_id,Habitacion_id,Fecha_id,Alojamiento_id,pagado,precio,estado) values ('.$precio->Hotel_id.','.$precio->Habitacion_id.','.$precio->Fecha_id.','.$precio->Alojamiento_id.','.$pagado.','.$precio->precio.',"'.$estado.'")');
+      DB::statement(' Insert into resguardos (Hotel_id,Habitacion_id,Fecha_id,Alojamiento_id,pagado,precio,estado,Cliente_id) values ('.$precio->Hotel_id.','.$precio->Habitacion_id.','.$precio->Fecha_id.','.$precio->Alojamiento_id.',"'.$pagado.'","'.$precio->precio.'","'.$estado.'",'. $cliente->id.')');
     }
 
   }

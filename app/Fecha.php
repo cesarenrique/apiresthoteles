@@ -7,6 +7,7 @@ use App\Temporada;
 
 class Fecha extends Model
 {
+  const INICIAL='2019-01-01';
   /**
    * The attributes that are mass assignable.
    *

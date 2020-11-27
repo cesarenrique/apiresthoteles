@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Habitacion;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Habitacion;
@@ -10,6 +11,10 @@ use App\Id;
 use App\TipoHabitacion;
 use App\Fecha;
 use App\Reserva;
+use App\Cliente;
+use App\Alojamiento;
+use App\ResguardoHotel;
+use App\Resguardo;
 
 class HabitacionController extends Controller
 {
@@ -177,8 +182,8 @@ class HabitacionController extends Controller
         if(!$request->has('desde') || !($request->has('hasta'))) {
            return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
         }
-        $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->get();
-        $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->first();
+        $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->get();
+        $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->first();
         if($prueba==null){
           return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
         }
@@ -190,13 +195,15 @@ class HabitacionController extends Controller
         foreach ($fechas as $fecha ) {
           $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::LIBRE)->first();
           if($aux!=null ) {
-            $libres[]=array_push($libres, array($j.""=> $fecha));
+            $libres[$j]= $fecha;
             $j++;
           }
           $i++;
         }
 
-
+        if(count($libres)==0){
+          return response()->json(['error'=>'no tiene fechas libres','code'=>409],409);
+        }
 
         return response()->json(['data' => $libres],200);
 
@@ -216,8 +223,8 @@ class HabitacionController extends Controller
       if(!$request->has('desde') || !($request->has('hasta'))) {
          return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
       }
-      $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->get();
-      $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->first();
+      $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->get();
+      $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->first();
       if($prueba==null){
         return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
       }
@@ -229,15 +236,17 @@ class HabitacionController extends Controller
       foreach ($fechas as $fecha ) {
         $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::RESERVADO)->first();
         if($aux!=null ) {
-          $libres[]=array_push($libres, array($j.""=> $fecha));
+          $ocupado[$j]= $fecha;
           $j++;
         }
         $i++;
       }
 
+      if(count($ocupado)==0){
+        return response()->json(['error'=>'no tiene fechas ocupacion','code'=>409],409);
+      }
 
-
-      return response()->json(['data' => $libres],200);
+      return response()->json(['data' => $ocupado],200);
     }
 
     /**
@@ -246,8 +255,149 @@ class HabitacionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function reservar($id){
-      //
+    public function total(Request $request,$hotel_id,$id){
+      $hotel= Hotel::findOrFail($hotel_id);
+
+      $habitacion=Habitacion::findOrFail($id);
+
+
+      if(!$request->has('desde') || !($request->has('hasta')) ) {
+         return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
+      }
+      $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->get();
+      $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->first();
+      if($prueba==null){
+        return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
+      }
+
+
+      $i=0;
+      $j=0;
+      $libres=array();
+      $precios=array();
+      $acum=0;
+      foreach ($fechas as $fecha ) {
+        $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::LIBRE)->first();
+        if($aux!=null ) {
+          $libres[$j]=$aux;
+          $j++;
+          $aux2=Alojamiento::find($aux->Alojamiento_id);
+          $acum+=$aux2->precio;
+          $precios[$j]=$aux2;
+        }else{
+          return response()->json(['error'=>'la habitacion no se encuentra libre en estos dias','code'=>409],409);
+
+        }
+        $i++;
+      }
+
+
+
+      $resguardoHotel=ResguardoHotel::where('Hotel_id',$hotel->id)->first();
+      $porcentaje=0;
+      if($resguardoHotel!=null){
+
+        $porcentaje=$resguardoHotel->porcentaje;
+        $minimo=$acum*$porcentaje/100;
+      }else{
+        $minimo=$acum;
+        $porcentaje=100;
+      }
+
+      $total=array();
+      $total['porcentaje']=$porcentaje;
+      $total['minimo']=$minimo;
+      $total['total']=$acum;
+
+      return response()->json(['data' => $total ],200);
+    }
+
+    /**
+     * Verifica si esta ocupada
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reservar(Request $request,$hotel_id,$id,$cliente_id){
+      $hotel= Hotel::findOrFail($hotel_id);
+
+      $habitacion=Habitacion::findOrFail($id);
+
+      $cliente=Cliente::findOrFail($cliente_id);
+
+      if(!$request->has('desde') || !($request->has('hasta')) || !($request->has('pagado'))) {
+         return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
+      }
+      $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->get();
+      $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->first();
+      if($prueba==null){
+        return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
+      }
+
+
+      $i=0;
+      $j=0;
+      $libres=array();
+      $precios=array();
+      $acum=0;
+      foreach ($fechas as $fecha ) {
+        $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::LIBRE)->first();
+        if($aux!=null ) {
+          $libres[$j]=$aux;
+          $j++;
+          $aux2=Alojamiento::find($aux->Alojamiento_id);
+          $acum+=$aux2->precio;
+          $precios[$j]=$aux2;
+        }else{
+          return response()->json(['error'=>'la habitacion no se encuentra libre en estos dias','code'=>409],409);
+
+        }
+        $i++;
+      }
+
+
+
+      $resguardoHotel=ResguardoHotel::where('Hotel_id',$hotel->id)->first();
+    if($resguardoHotel!=null){
+      if(($request->pagado)/$acum*100<$resguardoHotel->porcentaje){
+        return response()->json(['error'=>'no cumple minimo pagado para reservar en dicho hotel','code'=>409],409);
+      }
+    }else{
+      if($acum>$request->pagado){
+        return response()->json(['error'=>'no cumple minimo pagado para reservar en dicho hotel','code'=>409],409);
+      }
+    }
+
+    if($acum<$request->pagado){
+      $request->pagado=$acum;
+    }
+
+
+      $cantidad=count($libres);
+      $pagado=($request->pagado)/$cantidad;
+
+      $k=1;
+      foreach ($libres as $libre) {
+        $estado=Resguardo::RESERVA_ACEPTADA;
+        DB::statement(' Insert into resguardos (Hotel_id,Habitacion_id,Fecha_id,Alojamiento_id,pagado,precio,estado,Cliente_id) values ('.$hotel->id.','.$habitacion->id.','.$libre->Fecha_id.','.$libre->Alojamiento_id.',"'.$pagado.'","'.$precios[$k]->precio.'","'.$estado.'",'.$cliente->id.')');
+        $libre->reservado=Reserva::RESERVADO;
+        $libre->save();
+        $k++;
+      }
+
+      $resguardos=Resguardo::where('Cliente_id',$cliente->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->get();
+      $confirmacion=array();
+      $l=0;
+      foreach ($resguardos as $resguardo) {
+        foreach ($fechas as $fecha) {
+           if($resguardo->Fecha_id==$fecha->id){
+              $confirmacion[$l]=$resguardo;
+              $l++;
+           }
+        }
+      }
+
+      return response()->json(['data' => $confirmacion ],200);
     }
 
 
