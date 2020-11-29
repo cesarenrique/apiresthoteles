@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Provincia;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Pais;
+use App\Provincia;
 
 class ProvinciaController extends Controller
 {
@@ -12,9 +14,16 @@ class ProvinciaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($PaisId)
     {
-        //
+      $pais=Pais::findOrFail($PaisId);
+      $provincias=Provincia::where('Pais_id',$pais->id)->get();
+
+      if($provincias==null){
+        return response()->json(['error'=>'No existe esa provincias en ese Pais','code'=>409],409);
+      }
+
+      return response()->json(['data' => $provincias],200);
     }
 
     /**
@@ -44,9 +53,14 @@ class ProvinciaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($PaisId,$id)
     {
-        //
+      $pais=Pais::findOrFail($PaisId);
+      $provincia=Provincia::where('Pais_id',$pais->id)->where('id',$id)->first();
+      if($provincia==null){
+        return response()->json(['error'=>'No existe esa provincias en ese Pais','code'=>409],409);
+      }
+      return response()->json(['data' => $pais],200);
     }
 
     /**

@@ -52,9 +52,9 @@ class DatabaseSeeder extends Seeder
 
 
         $cantidadUsuarios=200;
-        $cantidadPaises=20;
-        $cantidadProvincias=100;
-        $cantidadLocalidades=300;
+        //$cantidadPaises=20;
+        //$cantidadProvincias=100;
+        //$cantidadLocalidades=300;
         $cantidadHoteles=100;
         $cantidadPension=100;
         $cantidadTipoHabitacion=3;
@@ -70,9 +70,10 @@ class DatabaseSeeder extends Seeder
 
         factory(User::class,$cantidadUsuarios)->create();
 
-        factory(Pais::class,$cantidadPaises)->create(); DatabaseSeeder::rellenarIdPaises();
-        factory(Provincia::class,$cantidadProvincias)->create(); DatabaseSeeder::rellenarIdProvincias();
-        factory(Localidad::class,$cantidadLocalidades)->create();
+        //factory(Pais::class,$cantidadPaises)->create(); DatabaseSeeder::rellenarIdPaises();
+        //factory(Provincia::class,$cantidadProvincias)->create(); DatabaseSeeder::rellenarIdProvincias();
+        //factory(Localidad::class,$cantidadLocalidades)->create();
+        DatabaseSeeder::rellenarLugares();
         factory(Hotel::class,$cantidadHoteles)->create();DatabaseSeeder::rellenarIdHoteles();
         factory(Pension::class,$cantidadPension)->create();
         factory(TipoHabitacion::class,$cantidadTipoHabitacion)->create();
@@ -112,6 +113,123 @@ class DatabaseSeeder extends Seeder
         //DB::statement(' Insert into ids (nombre,posicion,ides) values ("provincias",1)');
         //DB::statement(' Insert into ids (nombre,posicion) values ("localidads",1)');
         //DB::statement(' Insert into ids (nombre,posicion) values ("habitacions",1)');
+    }
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function rellenarLugares(){
+
+
+      DB::statement("INSERT INTO pais(id,nombre) VALUES (1,'Espanya')");
+
+
+      DB::statement("INSERT INTO provincias (id, nombre,Pais_id) VALUES(1,'Araba/Álava',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(2, 'Albacete',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(3, 'Alicante/Alacant',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(4, 'Almería',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(5, 'Ávila',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(6, 'Badajoz',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(7, 'Illes Balears',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(8, 'Barcelona',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(9, 'Burgos',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(10, 'Cáceres',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(11, 'Cádiz',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(12, 'Castellón/Castelló',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(13, 'Ciudad Real',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(14, 'Córdoba',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(15, 'A Coruña',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(16, 'Cuenca',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(17, 'Girona',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(18, 'Granada',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(19, 'Guadalajara',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(20, 'Gipuzkoa',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(21, 'Huelva',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(22, 'Huesca',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(23, 'Jaén',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(24, 'León',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(25, 'Lleida',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(26, 'La Rioja',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(27, 'Lugo',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(28, 'Madrid',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(29, 'Málaga',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(30, 'Murcia',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(31, 'Navarra',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(32, 'Ourense',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(33, 'Asturias',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(34, 'Palencia',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(35, 'Las Palmas',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(36, 'Pontevedra',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(37, 'Salamanca',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(38, 'Santa Cruz de Tenerife',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(39, 'Cantabria',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(40, 'Segovia',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(41, 'Sevilla',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(42, 'Soria',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(43, 'Tarragona',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(44, 'Teruel',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(45, 'Toledo',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(46, 'Valencia/València',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(47, 'Valladolid',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(48, 'Bizkaia',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(49, 'Zamora',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(50, 'Zaragoza',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(51, 'Ceuta',1)");
+      DB::statement("INSERT INTO provincias (id, nombre, Pais_id) VALUES(52, 'Melilla',1)");
+
+      DB::statement("INSERT INTO localidads (id, nombre,Pais_id, Provincia_id) VALUES(1,'Vitoria',1,1)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(2, 'Albacete',1,2)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(3, 'Alicante/Alacant',1,3)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(4, 'Almería',1,4)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(5, 'Ávila',1,5)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(6, 'Badajoz',1,6)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(7, 'Illes Balears',1,7)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(8, 'Barcelona',1,8)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(9, 'Burgos',1,9)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(10, 'Cáceres',1,10)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(11, 'Cádiz',1,11)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(12, 'Castellón de la Plana',1,12)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(13, 'Ciudad Real',1,13)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(14, 'Córdoba',1,14)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(15, 'La Coruña',1,15)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(16, 'Cuenca',1,16)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(17, 'Girona',1,17)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(18, 'Granada',1,18)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(19, 'Guadalajara',1,19)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(20, 'San Sebatián',1,20)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(21, 'Huelva',1,21)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(22, 'Huesca',1,22)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(23, 'Jaén',1,23)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(24, 'León',1,24)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(25, 'Lleida',1,25)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(26, 'Logronyo',1,26)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(27, 'Lugo',1,27)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(28, 'Madrid',1,28)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(29, 'Málaga',1,29)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(30, 'Murcia',1,30)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(31, 'Pamplona',1,31)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(32, 'Ourense',1,32)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(33, 'Oviedo',1,33)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(34, 'Palencia',1,34)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(35, 'Las Palmas',1,35)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(36, 'Pontevedra',1,36)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(37, 'Salamanca',1,37)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(38, 'Santa Cruz de Tenerife',1,38)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(39, 'Santander',1,39)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(40, 'Segovia',1,40)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(41, 'Sevilla',1,41)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(42, 'Soria',1,42)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(43, 'Tarragona',1,43)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(44, 'Teruel',1,44)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(45, 'Toledo',1,45)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(46, 'Valencia',1,46)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(47, 'Valladolid',1,47)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(48, 'Bilbao',1,48)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(49, 'Zamora',1,49)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(50, 'Zaragoza',1,50)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(51, 'Ceuta',1,51)");
+      DB::statement("INSERT INTO localidads (id, nombre, Pais_id, Provincia_id) VALUES(52, 'Melilla',1,52)");
     }
 
     /**

@@ -47,8 +47,9 @@ Route::delete('clientes/{cliente}/tarjetas/{tarjeta}','Tarjeta\TarjetaController
 Route::get('hotels/{hotel}/habitacions/{habitacion}/total','Habitacion\HabitacionController@total');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/reservar/{cliente}','Habitacion\HabitacionController@reservar');
 
+//Route::get('pais/nombre','Pais\PaisController@nombre');
 Route::resource('pais','Pais\PaisController',['only'=>['index','show']]);
 Route::get('pais/{pais}/provincia','Provincia\ProvinciaController@index');
 Route::get('pais/{pais}/provincia/{provincia}','Provincia\ProvinciaController@show');
-Route::get('pais/{pais}/provincia/{provincia}/localidad','Provincia\ProvinciaController@index');
-Route::get('pais/{pais}/provincia/{provincia}/localidad/{localidad}','Provincia\ProvinciaController@show');
+Route::get('pais/{pais}/provincia/{provincia}/localidad','Localidad\LocalidadController@index');
+Route::get('pais/{pais}/provincia/{provincia}/localidad/{localidad}','Localidad\LocalidadController@show');
