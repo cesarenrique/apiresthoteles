@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Hotel;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Hotel;
@@ -239,5 +240,55 @@ class HotelController extends Controller
 
 
       return response()->json(['data'=>$hoteles],200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function reservas(Request $request)
+    {
+
+      if(!($request->has('Localidad_id') && $request->has('Provincia_id')  && $request->has('Pais_id')
+        && $request->has('desde')  && $request->has('hasta') )){
+        return response()->json(['error'=>'No tiene lugar por donde filtrar, falta query Localidad_id o Provincia_id o Pais_id o desde o hasta','code'=>409],409);
+      }
+
+      $localidad=$request->Localidad_id;
+      $provincia=$request->Provincia_id;
+      $pais=$request->Pais_id;
+      $desde=$request->desde;
+      $hasta=$request->hasta;
+
+        $reservas=DB::select("select  r2.Fecha_id, r2.Pension_id, r2.TipoHabitacion_id,
+ r2.Hotel_id, r2.Temporada_id, r2.Alojamiento_id, r2.Habitacion_id,
+ precio, h.nombre 'HotelNombre', h.NIF, f2.fecha,
+ p2.nombre 'PaisNombre', p3.nombre 'ProvinciaNombre',l2.nombre 'LocalidadNombre'
+from  fechas f2 , habitacions h2 , hotels h  , reservas r2 , alojamientos a2, pais p2, provincias p3 , localidads l2
+where  r2.Hotel_id = f2.Hotel_id
+and r2.Hotel_id  = h2.Hotel_id
+and r2.Hotel_id  = h.id
+and r2.Alojamiento_id =a2.id
+and r2.Temporada_id = f2.Temporada_id
+and r2.Temporada_id = r2.Temporada_id
+and r2.Temporada_id = a2.Temporada_id
+and r2.TipoHabitacion_id = h2.TipoHabitacion_id
+and r2.TipoHabitacion_id =r2.TipoHabitacion_id
+and h2.TipoHabitacion_id =r2.TipoHabitacion_id
+and a2.id =r2.Alojamiento_id
+and r2.Habitacion_id = h2.id
+and f2.id = r2.Fecha_id
+and p2.id = h.Pais_id
+and p3.id = h.Provincia_id
+and l2.id = h.Localidad_id
+and p2.id =".$pais." and p3.id=".$provincia." and l2.id=".$localidad ."
+and f2.fecha >='".$desde."' and f2.fecha<='".$hasta."'
+and reservado='libre'
+order by h.id,h2.id");
+
+
+      return response()->json(['data'=>$reservas],200);
     }
 }

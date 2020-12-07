@@ -25,9 +25,13 @@ class HabitacionController extends Controller
      */
     public function index($id)
     {
-        $habitacion=Habitacion::where('Hotel_id',$id)->firstOrFail();
-        $habitaciones=Habitacion::where('Hotel_id',$id)->get();
-
+        //$habitacion=Habitacion::where('Hotel_id',$id)->firstOrFail();
+        //$habitaciones=Habitacion::where('Hotel_id',$id)->get();
+        $habitaciones=DB::select('select h.id,numero,Hotel_id ,TipoHabitacion_id, th.tipo
+                from habitacions h,tipo_habitacions th
+                where Hotel_id ='.$id.'
+                and h.TipoHabitacion_id =th.id
+                order by h.id ');
 
         return response()->json(['data'=>$habitaciones],200);
     }
@@ -175,6 +179,48 @@ class HabitacionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function libre(Request $request,$hotel_id,$id){
+        $hotel= Hotel::findOrFail($hotel_id);
+
+        $habitacion=Habitacion::findOrFail($id);
+
+        if(!$request->has('desde') || !($request->has('hasta'))) {
+           return response()->json(['error'=>'necesitamos el campo fecha desde y fecha hasta','code'=>409],409);
+        }
+        $fechas=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->get();
+        $prueba=Fecha::where('fecha','>=',$request->desde)->where('fecha','<=',$request->hasta)->where('Hotel_id',$hotel->id)->first();
+        if($prueba==null){
+          return response()->json(['error'=>'necesitamos una fecha desde y fecha hasta que contemple base datos','code'=>409],409);
+        }
+
+
+        $i=0;
+        $j=0;
+        $libres=array();
+        foreach ($fechas as $fecha ) {
+          $aux=Reserva::where('Fecha_id',$fecha->id)->where('Habitacion_id',$habitacion->id)->where('Hotel_id',$hotel->id)->where('reservado',Reserva::LIBRE)->first();
+          if($aux!=null ) {
+            $libres[$j]= $fecha;
+            $j++;
+          }
+          $i++;
+        }
+
+        if(count($libres)==0 || count($libres)!=$i){
+          return response()->json(['error'=>'no tiene fechas libres','code'=>409],409);
+        }
+
+        return response()->json(['data' => $libres],200);
+
+    }
+
+
+    /**
+     * Verifica si esta libre
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function diaslibres(Request $request,$hotel_id,$id){
         $hotel= Hotel::findOrFail($hotel_id);
 
         $habitacion=Habitacion::findOrFail($id);

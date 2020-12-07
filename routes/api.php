@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::resource('users','User\UserController',['except'=>['create','edit']]);
 
+
+Route::get('hotels/reservas','Hotel\HotelController@reservas');
 Route::get('hotels/lugar','Hotel\HotelController@hotelPorLugar');
 
 Route::resource('hotels','Hotel\HotelController',['except'=>['create','edit']]);
@@ -32,6 +34,7 @@ Route::get('hotels/{hotel}/habitacions/{habitacion}','Habitacion\HabitacionContr
 Route::put('hotels/{hotel}/habitacions/{habitacion}','Habitacion\HabitacionController@update');
 Route::delete('hotels/{hotel}/habitacions/{habitacion}','Habitacion\HabitacionController@destroy');
 //Route::get('hotels/{hotel}/habitacions/{habitacion}/edit','Habitacion\HabitacionController@edit');
+Route::get('hotels/{hotel}/habitacions/{habitacion}/diaslibres','Habitacion\HabitacionController@diaslibres');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/libre','Habitacion\HabitacionController@libre');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/ocupada','Habitacion\HabitacionController@ocupada');
 
