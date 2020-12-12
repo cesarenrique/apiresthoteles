@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cliente;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Cliente;
+use App\Resguardo;
 
 class ClienteController extends Controller
 {
@@ -135,5 +136,41 @@ class ClienteController extends Controller
       $cliente->delete();
 
       return response()->json(['data' => $cliente],200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function reservasHotel($id)
+    {
+      $cliente= Cliente::findOrFail($id);
+
+      $resguardos=Resguardo::where('Cliente_id',$cliente->id)->get();
+
+      return response()->json(['data' => $resguardos ],200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clientePorNIF(Request $request)
+    {
+
+        if($request->has('NIF')){
+          $cliente=Cliente::where('NIF',$request->NIF)->first();
+          if($cliente==null){
+            return response()->json(['error'=>'no existe ese NIF de cliente','code'=>409],409);
+          }
+          return response()->json(['data'=>$cliente],200);
+        }else{
+          return response()->json(['error'=>'Necesito query NIF','code'=>409],409);
+        }
+
+
     }
 }

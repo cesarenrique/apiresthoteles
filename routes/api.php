@@ -37,7 +37,8 @@ Route::delete('hotels/{hotel}/habitacions/{habitacion}','Habitacion\HabitacionCo
 Route::get('hotels/{hotel}/habitacions/{habitacion}/diaslibres','Habitacion\HabitacionController@diaslibres');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/libre','Habitacion\HabitacionController@libre');
 Route::get('hotels/{hotel}/habitacions/{habitacion}/ocupada','Habitacion\HabitacionController@ocupada');
-
+Route::get('clientes/clientePorNIF','Cliente\ClienteController@clientePorNIF');
+Route::get('clientes/{cliente}/reservasHotel','Cliente\ClienteController@reservasHotel');
 Route::resource('clientes','Cliente\ClienteController',['except'=>['create','edit']]);
 
 Route::get('clientes/{cliente}/tarjetas','Tarjeta\TarjetaController@index');
@@ -56,3 +57,4 @@ Route::get('pais/{pais}/provincia','Provincia\ProvinciaController@index');
 Route::get('pais/{pais}/provincia/{provincia}','Provincia\ProvinciaController@show');
 Route::get('pais/{pais}/provincia/{provincia}/localidad','Localidad\LocalidadController@index');
 Route::get('pais/{pais}/provincia/{provincia}/localidad/{localidad}','Localidad\LocalidadController@show');
+Route::resource('fechas','Fecha\FechaController',['only'=>['show']]);

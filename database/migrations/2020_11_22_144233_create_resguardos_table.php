@@ -19,13 +19,16 @@ class CreateResguardosTable extends Migration
             $table->Integer('Habitacion_id')->unsigned();
             $table->Integer('Hotel_id')->unsigned();
             $table->Integer('Alojamiento_id')->unsigned();
+            $table->Integer('Pension_id')->unsigned();
             $table->double('pagado');
             $table->double('precio');
             $table->string('Estado');
             $table->Integer('Cliente_id')->unsigned();
             //Controlar con programacion
-            //$table->unique(['Fecha_id','Habitacion_id','Hotel_id','Alojamiento_id','Cliente_id']);
+            //$table->unique(['Fecha_id','Habitacion_id','Hotel_id']);
+            $table->foreign('Alojamiento_id')->references('id')->on('alojamientos');
             $table->foreign('Cliente_id')->references('id')->on('clientes');
+            $table->foreign(['Hotel_id','Pension_id'])->references(['Hotel_id','id'])->on('pensions');
             $table->timestamps();
         });
     }

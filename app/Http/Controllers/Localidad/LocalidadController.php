@@ -22,7 +22,7 @@ class LocalidadController extends Controller
       if($provincia==null){
         return response()->json(['error'=>'No existe esa provincias en ese Pais','code'=>409],409);
       }
-      $localidads=Localidad::where('Pais_id',$pais->id)->where('Provincia_id',$provincia->id)->get();
+      $localidads=Localidad::where('Pais_id',$pais->id)->where('Provincia_id',$provincia->id)->first();
       if($localidads==null){
         return response()->json(['error'=>'No existe esa localidades en ese Provincia','code'=>409],409);
       }

@@ -355,18 +355,15 @@ class DatabaseSeeder extends Seeder
 
   public function rellenarReservas(){
 
-    $reservas=DB::select("select f2.id 'Fecha_id', a.Pension_id, a.TipoHabitacion_id, a.Hotel_id, a.Temporada_id, a.id 'Alojamiento_id', h2.id 'Habitacion_id'
-from alojamientos a, fechas f2 , habitacions h2
-where  a.Hotel_id = f2.Hotel_id
-and a.Hotel_id  = h2.Hotel_id
-and a.Temporada_id = f2.Temporada_id
-and a.TipoHabitacion_id = h2.TipoHabitacion_id  ");
+    $reservas=DB::select("select f2.id 'Fecha_id', h2.TipoHabitacion_id, h2.Hotel_id, f2.Temporada_id,  h2.id 'Habitacion_id'
+from  fechas f2 , habitacions h2
+where f2.Hotel_id  = h2.Hotel_id");
 
 
     foreach ($reservas as $reserva) {
-          $existe=DB::select("select * from reservas where Fecha_id=".$reserva->Fecha_id. " and Alojamiento_id=".$reserva->Alojamiento_id." and Habitacion_id=".$reserva->Habitacion_id. " and Hotel_id=".$reserva->Hotel_id);
+          $existe=DB::select("select * from reservas where Fecha_id=".$reserva->Fecha_id. " and Habitacion_id=".$reserva->Habitacion_id. " and Hotel_id=".$reserva->Hotel_id);
           if($existe==null){
-            DB::statement(' Insert into reservas (Hotel_id,Pension_id,TipoHabitacion_id,Habitacion_id,Temporada_id,Fecha_id,Alojamiento_id) values ('.$reserva->Hotel_id.','.$reserva->Pension_id.','.$reserva->TipoHabitacion_id.','.$reserva->Habitacion_id.','.$reserva->Temporada_id.','.$reserva->Fecha_id.','.$reserva->Alojamiento_id.')');
+            DB::statement(' Insert into reservas (Hotel_id,TipoHabitacion_id,Habitacion_id,Temporada_id,Fecha_id) values ('.$reserva->Hotel_id.','.$reserva->TipoHabitacion_id.','.$reserva->Habitacion_id.','.$reserva->Temporada_id.','.$reserva->Fecha_id.')');
           }else{
             echo "error2";
           }
@@ -384,29 +381,35 @@ and a.TipoHabitacion_id = h2.TipoHabitacion_id  ");
   }
 
   public function rellenarResguados(Faker\Generator $faker){
-    $precios=DB::select('select  r2.id,Fecha_id,a.Pension_id ,a.TipoHabitacion_id,Habitacion_id, a.Hotel_id, a.Temporada_id,precio, a.id "Alojamiento_id"
-from  reservas r2,alojamientos a
-where r2.Hotel_id =a.Hotel_id
-and r2.Pension_id =a.Pension_id
-and r2.Temporada_id =a.Temporada_id
-and r2.TipoHabitacion_id =a.TipoHabitacion_id');
+    $reservas=DB::select('select  r2.id,Fecha_id,r2.TipoHabitacion_id,r2.Habitacion_id, r2.Hotel_id, r2.Temporada_id
+from  reservas r2');
 
-    foreach ($precios as $precio) {
-      $resguardoHotel=ResguardoHotel::where('Hotel_id',$precio->Hotel_id)->first();
-      $pagado="";
-      if($resguardoHotel!=null){
-        $pagado=(floatval($faker->numberBetween($min = $resguardoHotel->porcentaje, $max = 100))/100)*$precio->precio;
-      }else{
-        $pagado=$precio->precio;
-      }
-      $estado=$faker->randomElement([Resguardo::RESERVA_ACEPTADA,Resguardo::RESERVA_FALLIDA]);
+    foreach ($reservas as $reserva) {
 
-      if($estado==Resguardo::RESERVA_ACEPTADA){
-        DB::statement('UPDATE reservas SET reservado="'.Reserva::RESERVADO.'" WHERE id='.$precio->id);
-      }
+        $alojamientos=Alojamiento::where('Hotel_id',$reserva->Hotel_id)->where('Temporada_id',$reserva->Temporada_id)->where('TipoHabitacion_id',$reserva->TipoHabitacion_id)->get();
 
-      $cliente=Cliente::All()->random();
-      DB::statement(' Insert into resguardos (Hotel_id,Habitacion_id,Fecha_id,Alojamiento_id,pagado,precio,estado,Cliente_id) values ('.$precio->Hotel_id.','.$precio->Habitacion_id.','.$precio->Fecha_id.','.$precio->Alojamiento_id.',"'.$pagado.'","'.$precio->precio.'","'.$estado.'",'. $cliente->id.')');
+        $alojamiento=$faker->randomElement($alojamientos);
+        $resguardoHotel=ResguardoHotel::where('Hotel_id',$reserva->Hotel_id)->first();
+        $pagado="";
+        if($resguardoHotel!=null){
+          $pagado=(floatval($faker->numberBetween($min = $resguardoHotel->porcentaje, $max = 100))/100)*$alojamiento->precio;
+        }else{
+          $pagado=$alojamiento->precio;
+        }
+        $estado=$faker->randomElement([Resguardo::RESERVA_ACEPTADA,Resguardo::RESERVA_FALLIDA]);
+
+        if($estado==Resguardo::RESERVA_ACEPTADA){
+          DB::statement('UPDATE reservas SET reservado="'.Reserva::RESERVADO.'" WHERE id='.$reserva->id);
+        }
+
+        $cliente=Cliente::All()->random();
+        DB::statement(' Insert into resguardos (Hotel_id,Pension_id,Habitacion_id,Fecha_id,Alojamiento_id,pagado,precio,estado,Cliente_id) values ('.$reserva->Hotel_id.','.
+        $alojamiento->Pension_id.','.
+        $reserva->Habitacion_id.','.
+        $reserva->Fecha_id.','.
+        $alojamiento->id.
+        ',"'.$pagado.'","'.$alojamiento->precio.'","'.$estado.'",'. $cliente->id.')');
+
     }
 
   }
